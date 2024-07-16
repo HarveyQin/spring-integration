@@ -88,10 +88,12 @@ import static org.mockito.Mockito.when;
  */
 public class InboundEndpointTests {
 	final ConnectionFactory connectionFactory = mock(ConnectionFactory.class);
+	final Channel rabbitChannel = mock(Channel.class);
+	final Channel channel = mock(Channel.class);
+	final Connection connection = mock(Connection.class);
 	
 	@Test
 	public void testInt2809JavaTypePropertiesToAmqp() throws Exception {
-		Connection connection = mock(Connection.class);
 		doAnswer(invocation -> mock(Channel.class)).when(connection).createChannel(anyBoolean());
 		when(connectionFactory.createConnection()).thenReturn(connection);
 		SimpleMessageListenerContainer container = new SimpleMessageListenerContainer();
@@ -120,7 +122,6 @@ public class InboundEndpointTests {
 		DefaultAmqpHeaderMapper.inboundMapper().fromHeadersToRequest(jsonMessage.getHeaders(), amqpMessageProperties);
 
 		ChannelAwareMessageListener listener = (ChannelAwareMessageListener) container.getMessageListener();
-		Channel rabbitChannel = mock(Channel.class);
 		listener.onMessage(amqpMessage, rabbitChannel);
 
 		Message<?> result = channel.receive(1000);
@@ -134,7 +135,6 @@ public class InboundEndpointTests {
 
 	@Test
 	public void testInt2809JavaTypePropertiesFromAmqp() throws Exception {
-		Connection connection = mock(Connection.class);
 		doAnswer(invocation -> mock(Channel.class)).when(connection).createChannel(anyBoolean());
 		when(connectionFactory.createConnection()).thenReturn(connection);
 		SimpleMessageListenerContainer container = new SimpleMessageListenerContainer();
@@ -168,7 +168,6 @@ public class InboundEndpointTests {
 
 	@Test
 	public void testMessageConverterJsonHeadersHavePrecedenceOverMessageHeaders() throws Exception {
-		Connection connection = mock(Connection.class);
 		doAnswer(invocation -> mock(Channel.class)).when(connection).createChannel(anyBoolean());
 		when(connectionFactory.createConnection()).thenReturn(connection);
 		SimpleMessageListenerContainer container = new SimpleMessageListenerContainer();
@@ -176,8 +175,6 @@ public class InboundEndpointTests {
 		container.setAcknowledgeMode(AcknowledgeMode.MANUAL);
 
 		DirectChannel channel = new DirectChannel();
-
-		final Channel rabbitChannel = mock(Channel.class);
 
 		channel.subscribe(new MessageTransformingHandler(message -> {
 			assertThat(message.getHeaders().get(AmqpHeaders.CHANNEL)).isSameAs(rabbitChannel);
@@ -233,7 +230,6 @@ public class InboundEndpointTests {
 
 	@Test
 	public void testAdapterConversionError() throws Exception {
-		Connection connection = mock(Connection.class);
 		doAnswer(invocation -> mock(Channel.class)).when(connection).createChannel(anyBoolean());
 		when(connectionFactory.createConnection()).thenReturn(connection);
 		SimpleMessageListenerContainer container = new SimpleMessageListenerContainer();
@@ -266,7 +262,6 @@ public class InboundEndpointTests {
 
 		container.setAcknowledgeMode(AcknowledgeMode.MANUAL);
 		adapter.afterPropertiesSet(); // ack mode is now captured during init
-		Channel channel = mock(Channel.class);
 		((ChannelAwareMessageListener) container.getMessageListener())
 				.onMessage(message, channel);
 		assertThat(outputChannel.receive(0)).isNull();
@@ -282,7 +277,6 @@ public class InboundEndpointTests {
 
 	@Test
 	public void testGatewayConversionError() throws Exception {
-		Connection connection = mock(Connection.class);
 		doAnswer(invocation -> mock(Channel.class)).when(connection).createChannel(anyBoolean());
 		when(connectionFactory.createConnection()).thenReturn(connection);
 		SimpleMessageListenerContainer container = new SimpleMessageListenerContainer();
@@ -319,7 +313,6 @@ public class InboundEndpointTests {
 		assertThat(received.getHeaders().get(AmqpMessageHeaderErrorMessageStrategy.AMQP_RAW_MESSAGE)).isNotNull();
 
 		container.setAcknowledgeMode(AcknowledgeMode.MANUAL);
-		Channel channel = mock(Channel.class);
 		((ChannelAwareMessageListener) container.getMessageListener())
 				.onMessage(message, channel);
 		assertThat(outputChannel.receive(0)).isNull();
@@ -579,7 +572,6 @@ public class InboundEndpointTests {
 
 	@Test
 	public void testAdapterConversionErrorConsumerBatchExtract() {
-		Connection connection = mock(Connection.class);
 		doAnswer(invocation -> mock(Channel.class)).when(connection).createChannel(anyBoolean());
 		when(connectionFactory.createConnection()).thenReturn(connection);
 		SimpleMessageListenerContainer container = new SimpleMessageListenerContainer();
@@ -619,7 +611,6 @@ public class InboundEndpointTests {
 
 		container.setAcknowledgeMode(AcknowledgeMode.MANUAL);
 		adapter.afterPropertiesSet(); // ack mode is now captured during init
-		Channel channel = mock(Channel.class);
 		((ChannelAwareBatchMessageListener) container.getMessageListener())
 				.onMessageBatch(messages, channel);
 		assertThat(outputChannel.receive(0)).isNull();
@@ -635,7 +626,6 @@ public class InboundEndpointTests {
 
 	@Test
 	public void testAdapterConversionErrorConsumerBatch() {
-		Connection connection = mock(Connection.class);
 		doAnswer(invocation -> mock(Channel.class)).when(connection).createChannel(anyBoolean());
 		when(connectionFactory.createConnection()).thenReturn(connection);
 		SimpleMessageListenerContainer container = new SimpleMessageListenerContainer();
@@ -674,7 +664,6 @@ public class InboundEndpointTests {
 
 		container.setAcknowledgeMode(AcknowledgeMode.MANUAL);
 		adapter.afterPropertiesSet(); // ack mode is now captured during init
-		Channel channel = mock(Channel.class);
 		((ChannelAwareBatchMessageListener) container.getMessageListener())
 				.onMessageBatch(messages, channel);
 		assertThat(outputChannel.receive(0)).isNull();
