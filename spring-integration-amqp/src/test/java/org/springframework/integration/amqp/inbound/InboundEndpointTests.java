@@ -87,12 +87,12 @@ import static org.mockito.Mockito.when;
  * @since 3.0
  */
 public class InboundEndpointTests {
-
+	final ConnectionFactory connectionFactory = mock(ConnectionFactory.class);
+	
 	@Test
 	public void testInt2809JavaTypePropertiesToAmqp() throws Exception {
 		Connection connection = mock(Connection.class);
 		doAnswer(invocation -> mock(Channel.class)).when(connection).createChannel(anyBoolean());
-		ConnectionFactory connectionFactory = mock(ConnectionFactory.class);
 		when(connectionFactory.createConnection()).thenReturn(connection);
 		SimpleMessageListenerContainer container = new SimpleMessageListenerContainer();
 		container.setConnectionFactory(connectionFactory);
@@ -136,7 +136,6 @@ public class InboundEndpointTests {
 	public void testInt2809JavaTypePropertiesFromAmqp() throws Exception {
 		Connection connection = mock(Connection.class);
 		doAnswer(invocation -> mock(Channel.class)).when(connection).createChannel(anyBoolean());
-		ConnectionFactory connectionFactory = mock(ConnectionFactory.class);
 		when(connectionFactory.createConnection()).thenReturn(connection);
 		SimpleMessageListenerContainer container = new SimpleMessageListenerContainer();
 		container.setConnectionFactory(connectionFactory);
@@ -171,7 +170,6 @@ public class InboundEndpointTests {
 	public void testMessageConverterJsonHeadersHavePrecedenceOverMessageHeaders() throws Exception {
 		Connection connection = mock(Connection.class);
 		doAnswer(invocation -> mock(Channel.class)).when(connection).createChannel(anyBoolean());
-		ConnectionFactory connectionFactory = mock(ConnectionFactory.class);
 		when(connectionFactory.createConnection()).thenReturn(connection);
 		SimpleMessageListenerContainer container = new SimpleMessageListenerContainer();
 		container.setConnectionFactory(connectionFactory);
@@ -237,7 +235,6 @@ public class InboundEndpointTests {
 	public void testAdapterConversionError() throws Exception {
 		Connection connection = mock(Connection.class);
 		doAnswer(invocation -> mock(Channel.class)).when(connection).createChannel(anyBoolean());
-		ConnectionFactory connectionFactory = mock(ConnectionFactory.class);
 		when(connectionFactory.createConnection()).thenReturn(connection);
 		SimpleMessageListenerContainer container = new SimpleMessageListenerContainer();
 		container.setConnectionFactory(connectionFactory);
@@ -287,7 +284,6 @@ public class InboundEndpointTests {
 	public void testGatewayConversionError() throws Exception {
 		Connection connection = mock(Connection.class);
 		doAnswer(invocation -> mock(Channel.class)).when(connection).createChannel(anyBoolean());
-		ConnectionFactory connectionFactory = mock(ConnectionFactory.class);
 		when(connectionFactory.createConnection()).thenReturn(connection);
 		SimpleMessageListenerContainer container = new SimpleMessageListenerContainer();
 		container.setConnectionFactory(connectionFactory);
@@ -339,7 +335,6 @@ public class InboundEndpointTests {
 
 	@Test
 	public void testRetryWithinOnMessageAdapter() throws Exception {
-		ConnectionFactory connectionFactory = mock(ConnectionFactory.class);
 		AbstractMessageListenerContainer container = new SimpleMessageListenerContainer(connectionFactory);
 		AmqpInboundChannelAdapter adapter = new AmqpInboundChannelAdapter(container);
 		adapter.setOutputChannel(new DirectChannel());
@@ -367,7 +362,6 @@ public class InboundEndpointTests {
 
 	@Test
 	public void testRetryWithMessageRecovererOnMessageAdapter() throws Exception {
-		ConnectionFactory connectionFactory = mock(ConnectionFactory.class);
 		AbstractMessageListenerContainer container = new SimpleMessageListenerContainer(connectionFactory);
 		AmqpInboundChannelAdapter adapter = new AmqpInboundChannelAdapter(container);
 		adapter.setOutputChannel(new DirectChannel());
@@ -400,7 +394,6 @@ public class InboundEndpointTests {
 
 	@Test
 	public void testRetryWithinOnMessageGateway() throws Exception {
-		ConnectionFactory connectionFactory = mock(ConnectionFactory.class);
 		AbstractMessageListenerContainer container = new SimpleMessageListenerContainer(connectionFactory);
 		AmqpInboundGateway adapter = new AmqpInboundGateway(container);
 		adapter.setRequestChannel(new DirectChannel());
@@ -428,7 +421,6 @@ public class InboundEndpointTests {
 
 	@Test
 	public void testRetryWithMessageRecovererOnMessageGateway() throws Exception {
-		ConnectionFactory connectionFactory = mock(ConnectionFactory.class);
 		AbstractMessageListenerContainer container = new SimpleMessageListenerContainer(connectionFactory);
 		AmqpInboundGateway adapter = new AmqpInboundGateway(container);
 		adapter.setRequestChannel(new DirectChannel());
@@ -589,7 +581,6 @@ public class InboundEndpointTests {
 	public void testAdapterConversionErrorConsumerBatchExtract() {
 		Connection connection = mock(Connection.class);
 		doAnswer(invocation -> mock(Channel.class)).when(connection).createChannel(anyBoolean());
-		ConnectionFactory connectionFactory = mock(ConnectionFactory.class);
 		when(connectionFactory.createConnection()).thenReturn(connection);
 		SimpleMessageListenerContainer container = new SimpleMessageListenerContainer();
 		container.setConnectionFactory(connectionFactory);
@@ -646,7 +637,6 @@ public class InboundEndpointTests {
 	public void testAdapterConversionErrorConsumerBatch() {
 		Connection connection = mock(Connection.class);
 		doAnswer(invocation -> mock(Channel.class)).when(connection).createChannel(anyBoolean());
-		ConnectionFactory connectionFactory = mock(ConnectionFactory.class);
 		when(connectionFactory.createConnection()).thenReturn(connection);
 		SimpleMessageListenerContainer container = new SimpleMessageListenerContainer();
 		container.setConnectionFactory(connectionFactory);
@@ -700,7 +690,6 @@ public class InboundEndpointTests {
 
 	@Test
 	public void testRetryWithinOnMessageAdapterConsumerBatch() {
-		ConnectionFactory connectionFactory = mock(ConnectionFactory.class);
 		SimpleMessageListenerContainer container = new SimpleMessageListenerContainer(connectionFactory);
 		container.setConsumerBatchEnabled(true);
 		AmqpInboundChannelAdapter adapter = new AmqpInboundChannelAdapter(container);
@@ -746,7 +735,6 @@ public class InboundEndpointTests {
 
 	@Test
 	public void testRetryWithMessageRecovererOnMessageAdapterConsumerBatch() throws InterruptedException {
-		ConnectionFactory connectionFactory = mock(ConnectionFactory.class);
 		SimpleMessageListenerContainer container = new SimpleMessageListenerContainer(connectionFactory);
 		container.setConsumerBatchEnabled(true);
 		AmqpInboundChannelAdapter adapter = new AmqpInboundChannelAdapter(container);
